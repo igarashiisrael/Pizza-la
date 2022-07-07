@@ -1,21 +1,29 @@
 package com.igarashiisrael.pizzala.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "tb_order")
 public class Order implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
     private Double latitude;
     private Double longitude;
     private Instant moment;
     private OrderStatus status;
-    private Double total;
 
+    @ManyToMany
+    @JoinTable(name = "tb_order_product",
+    joinColumns = @JoinColumn(name = "order_id"),
+    inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products = new HashSet<>();
 
     public Order(){
@@ -28,7 +36,6 @@ public class Order implements Serializable {
         this.longitude = longitude;
         this.moment = moment;
         this.status = status;
-        this.total = total;
         this.products = products;
     }
 
@@ -78,14 +85,6 @@ public class Order implements Serializable {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
-    }
-
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
     }
 
     public Set<Product> getProducts() {
